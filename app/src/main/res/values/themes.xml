@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SmartEdge" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorOnErrorContainer">@color/md_theme_dark_onErrorContainer</item>
+        <item name="colorOnError">@color/md_theme_dark_onError</item>
+        <item name="colorErrorContainer">@color/md_theme_dark_errorContainer</item>
+        <item name="colorOnTertiaryContainer">@color/md_theme_dark_onTertiaryContainer</item>
+        <item name="colorOnTertiary">@color/md_theme_dark_onTertiary</item>
+        <item name="colorTertiaryContainer">@color/md_theme_dark_tertiaryContainer</item>
+        <item name="colorTertiary">@color/md_theme_dark_tertiary</item>
+        <item name="colorError">@color/md_theme_dark_error</item>
+        <item name="colorOutline">@color/md_theme_dark_outline</item>
+        <item name="colorOnBackground">@color/md_theme_dark_onBackground</item>
+        <item name="android:colorBackground">@color/md_theme_dark_background</item>
+        <item name="colorOnSurfaceInverse">@color/md_theme_dark_inverseOnSurface</item>
+        <item name="colorSurfaceInverse">@color/md_theme_dark_inverseSurface</item>
+        <item name="colorOnSurfaceVariant">@color/md_theme_dark_onSurfaceVariant</item>
+        <item name="colorOnSurface">#DCECD0</item>
+        <item name="colorSurfaceVariant">@color/md_theme_dark_surfaceVariant</item>
+        <item name="colorSurface">#0F1E04</item>
+        <item name="colorOnSecondaryContainer">#DCECD0</item>
+        <item name="colorOnSecondary">#253A18</item>
+        <item name="colorSecondaryContainer">#2F4A1F</item>
+        <item name="colorSecondary">#DCECD0</item>
+        <item name="colorOnPrimaryContainer">#DCECD0</item>
+        <item name="colorOnPrimary">#2A461B</item>
+        <item name="colorPrimaryContainer">#437028</item>
+        <item name="colorPrimary">#B9DBA4</item>
+        <item name="colorPrimaryInverse">#99C87A</item>
+        <item name="android:statusBarColor">#1B300F</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
