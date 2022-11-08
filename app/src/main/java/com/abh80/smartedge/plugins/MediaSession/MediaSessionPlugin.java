@@ -47,109 +47,109 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class MediaSessionPlugin extends BasePlugin {
+public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获取我们的mediaSession的信息，然后显示在我们的悬浮窗上
 
-    private SeekBar seekBar;
-    private TextView elapsedView;
-    private TextView remainingView;
-    public String current_package_name = "";
-    public boolean expanded = false;
-    public Map<String, MediaController.Callback> callbackMap = new HashMap<>();
-    private boolean seekbar_dragging = false;
-    public Instant last_played;
-    OverlayService ctx;
-    Handler mHandler;
-    public MediaController mCurrent;
+    private SeekBar seekBar;//这个是我们的进度条
+    private TextView elapsedView;//这个是我们的已经播放的时间
+    private TextView remainingView;//这个是我们的剩余时间
+    public String current_package_name = "";//这个是我们当前的包名
+    public boolean expanded = false;//这个是我们的悬浮窗是否展开的标志
+    public Map<String, MediaController.Callback> callbackMap = new HashMap<>();//这个是我们的回调函数的map
+    private boolean seekbar_dragging = false;//这个是我们的进度条是否正在拖动的标志
+    public Instant last_played;//这个是我们最后一次播放的时间
+    OverlayService ctx;//这个是我们的悬浮窗
+    Handler mHandler;//这里Handler的作用是用来更新我们的进度条的
+    public MediaController mCurrent;//这个是我们的当前的mediaController，作用是用来获取我们的mediaSession的信息
 
-    private final Runnable r = new Runnable() {
+    private final Runnable r = new Runnable() {//这里的Runnable的作用是用来更新我们的进度条的
         @Override
         public void run() {
-            if (!expanded) return;
-            if (mCurrent == null) {
+            if (!expanded) return;//如果我们的悬浮窗没有展开，那么就不更新进度条
+            if (mCurrent == null) {//如果我们的mediaController为空，那么就不更新进度条
+                closeOverlay();//关闭我们的悬浮窗
+                return;
+            }
+            long elapsed = mCurrent.getPlaybackState().getPosition();//获取我们的已经播放的时间
+            if (elapsed < 0) {//如果我们的已经播放的时间小于0，那么就不更新进度条
                 closeOverlay();
                 return;
             }
-            long elapsed = mCurrent.getPlaybackState().getPosition();
-            if (elapsed < 0) {
+            if (mCurrent.getMetadata() == null) {//如果我们的mediaMetadata为空，那么就不更新进度条
                 closeOverlay();
                 return;
             }
-            if (mCurrent.getMetadata() == null) {
-                closeOverlay();
-                return;
-            }
-            long total = mCurrent.getMetadata().getLong(MediaMetadata.METADATA_KEY_DURATION);
-            elapsedView.setText(DurationFormatUtils.formatDuration(elapsed, "mm:ss", true));
-            remainingView.setText("-" + DurationFormatUtils.formatDuration(Math.abs(total - elapsed), "mm:ss", true));
-            if (!seekbar_dragging) seekBar.setProgress((int) ((((float) elapsed / total) * 100)));
-            mHandler.post(r);
+            long total = mCurrent.getMetadata().getLong(MediaMetadata.METADATA_KEY_DURATION);//获取我们的总时间
+            elapsedView.setText(DurationFormatUtils.formatDuration(elapsed, "mm:ss", true));//设置我们的已经播放的时间
+            remainingView.setText("-" + DurationFormatUtils.formatDuration(Math.abs(total - elapsed), "mm:ss", true));//设置我们的剩余时间
+            if (!seekbar_dragging) seekBar.setProgress((int) ((((float) elapsed / total) * 100)));//如果我们的进度条没有拖动，那么就更新我们的进度条
+            mHandler.post(r);//更新我们的进度条
         }
     };
 
 
-    private boolean overlayOpen = false;
+    private boolean overlayOpen = false;//这个是我们的悬浮窗是否打开的标志
 
     public boolean overlayOpen() {
         return overlayOpen;
-    }
+    }//这个是我们的悬浮窗是否打开的标志
 
     public void closeOverlay() {
-        animateChild(0, new CallBack());
+        animateChild(0, new CallBack());//关闭我们的悬浮窗
         overlayOpen = false;
-        shouldRemoveOverlay();
+        shouldRemoveOverlay();//移除我们的悬浮窗
     }
 
-    public void closeOverlay(CallBack callBack) {
+    public void closeOverlay(CallBack callBack) {//关闭特定的悬浮窗
         animateChild(0, callBack);
         overlayOpen = false;
     }
 
-    private ImageView pause_play;
+    private ImageView pause_play;//这个是我们的暂停播放的按钮
 
-    public MediaController getActiveCurrent(List<MediaController> mediaControllers) {
-        if (mediaControllers.size() == 0) return null;
+    public MediaController getActiveCurrent(List<MediaController> mediaControllers) {//这个是用来获取我们的当前的mediaController的
+        if (mediaControllers.size() == 0) return null;//如果我们的mediaController的数量为0，那么就返回null
         try {
-            Optional<MediaController> controller = mediaControllers.stream().filter(x -> x.getPlaybackState().getState() == PlaybackState.STATE_PLAYING).findFirst();
-            return controller.orElse(null);
+            Optional<MediaController> controller = mediaControllers.stream().filter(x -> x.getPlaybackState().getState() == PlaybackState.STATE_PLAYING).findFirst();//获取我们的当前的mediaController
+            return controller.orElse(null);//返回我们的当前的mediaController
         } catch (Exception e) {
             return null;
         }
     }
 
-    private boolean isColorDark(int color) {
+    private boolean isColorDark(int color) {//这个是用来判断我们的颜色是否是深色的
         // Source : https://stackoverflow.com/a/24261119
-        double darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;
+        double darkness = 1 - (0.299 * Color.red(color) + 0.587 * Color.green(color) + 0.114 * Color.blue(color)) / 255;//获取我们的颜色的深浅
         // It's a dark color
         return !(darkness < 0.5); // It's a light color
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
-    public void onPlayerResume(boolean b) {
-        if (expanded && b) {
-            pause_play.setImageDrawable(ctx.getDrawable(R.drawable.avd_play_to_pause));
-            pause_play.setImageTintList(ColorStateList.valueOf(ctx.textColor));
+    @SuppressLint("UseCompatLoadingForDrawables")//这个是用来忽略我们的警告的
+    public void onPlayerResume(boolean b) {//这个是用来更新我们的悬浮窗的，resume意思是恢复
+        if (expanded && b) {//如果我们的悬浮窗展开了，并且我们的悬浮窗是打开的
+            pause_play.setImageDrawable(ctx.getDrawable(R.drawable.avd_play_to_pause));//设置我们的暂停播放的按钮的图
+            pause_play.setImageTintList(ColorStateList.valueOf(ctx.textColor));//设置我们的暂停播放的按钮的颜色
             ((AnimatedVectorDrawable) pause_play.getDrawable()).start();
         }
         if (mCurrent == null) return;
-        int index = -1;
-        List<MediaController> controllerList = mediaSessionManager.getActiveSessions(new ComponentName(ctx.getBaseContext(), NotiService.class));
-        for (int v = 0; v < controllerList.size(); v++) {
-            if (Objects.equals(controllerList.get(v).getPackageName(), mCurrent.getPackageName())) {
-                index = v;
+        int index = -1;//这个是我们的当前的mediaController的索引
+        List<MediaController> controllerList = mediaSessionManager.getActiveSessions(new ComponentName(ctx.getBaseContext(), NotiService.class));//获取我们的当前的mediaController的列表
+        for (int v = 0; v < controllerList.size(); v++) {//遍历我们的mediaController的列表
+            if (Objects.equals(controllerList.get(v).getPackageName(), mCurrent.getPackageName())) {//如果我们的当前的mediaController的包名和我们的当前的mediaController的包名相同
+                index = v;//那么就把我们的当前的mediaController的索引设置为v
                 break;
             }
 
         }
         if (index == -1) return;
-        visualizer.setPlayerId(index);
-        if (mCurrent.getMetadata() == null) return;
-        Bitmap bm = mCurrent.getMetadata().getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);
-        if (bm == null) return;
-        int dc = getDominantColor(bm);
-        if (isColorDark(dc)) {
-            dc = lightenColor(dc);
+        visualizer.setPlayerId(index);//设置我们的可视化的播放器的id
+        if (mCurrent.getMetadata() == null) return;//如果我们的当前的mediaController的元数据为空，那么就返回
+        Bitmap bm = mCurrent.getMetadata().getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART);//获取我们的当前的mediaController的专辑封面
+        if (bm == null) return;//如果我们的专辑封面为空，那么就返回
+        int dc = getDominantColor(bm);//获取我们的专辑封面的主要颜色
+        if (isColorDark(dc)) {//如果我们的颜色是深色的
+            dc = lightenColor(dc);//那么就把我们的颜色变浅
         }
-        visualizer.setColor(dc);
+        visualizer.setColor(dc);//设置我们的可视化的颜色
     }
 
     private int lightenColor(int colorin) {
@@ -205,17 +205,17 @@ public class MediaSessionPlugin extends BasePlugin {
     };
 
     @Override
-    public void onCreate(OverlayService context) {
-        ctx = context;
-        mHandler = new Handler(context.getMainLooper());
-        mView = LayoutInflater.from(context).inflate(R.layout.media_session_layout, null);
-        mView.findViewById(R.id.blank_space).setVisibility(View.VISIBLE);
-        init();
+    public void onCreate(OverlayService context) {//这个是我们的插件的创建
+        ctx = context;//把我们的上下文设置为我们的context
+        mHandler = new Handler(context.getMainLooper());//创建我们的handler
+        mView = LayoutInflater.from(context).inflate(R.layout.media_session_layout, null);//创建我们的视图
+        mView.findViewById(R.id.blank_space).setVisibility(View.VISIBLE);//设置我们的空白的空间为可见
+        init();//初始化我们的插件
 
-        mediaSessionManager = (MediaSessionManager) ctx.getSystemService(Context.MEDIA_SESSION_SERVICE);
-        mediaSessionManager.addOnActiveSessionsChangedListener(listnerForActiveSessions, new
+        mediaSessionManager = (MediaSessionManager) ctx.getSystemService(Context.MEDIA_SESSION_SERVICE);//获取我们的mediaSessionManager
+        mediaSessionManager.addOnActiveSessionsChangedListener(listnerForActiveSessions, new//添加我们的活跃的会话改变的监听器
 
-                ComponentName(ctx, NotiService.class));
+                ComponentName(ctx, NotiService.class));//设置我们的组件名为我们的NotiService
         mediaSessionManager.getActiveSessions(new
 
                         ComponentName(ctx, NotiService.class)).
