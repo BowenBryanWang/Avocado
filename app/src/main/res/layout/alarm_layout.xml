@@ -92,7 +92,7 @@
             tools:ignore="UselessParent">
 
             <TextView
-                android:id="@+id/artist_subtitle"
+                android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:alpha="0.8"
@@ -111,57 +111,16 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/elapsed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/relativeLayout"
-        android:layout_marginStart="31dp"
-        android:layout_marginBottom="3dp"
-        android:text="1:19"
-        android:textColor="@color/not_quite_white"
-        android:visibility="gone" />
-
-    <SeekBar
-        android:id="@+id/progressBar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="0dp"
-        android:layout_height="10dp"
-        android:layout_below="@id/relativeLayout"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="6dp"
-        android:layout_toStartOf="@id/remaining"
-        android:layout_toEndOf="@id/elapsed"
-        android:progress="50"
-        android:layout_marginTop="10dp"
-        android:progressDrawable="@drawable/custom_progress_bar_horizontal"
-        android:scaleY="0.8"
-        android:thumb="@color/transparent"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/remaining"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/relativeLayout"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="31dp"
-        android:layout_marginBottom="3dp"
-        android:text="-1:19"
-        android:textColor="@color/not_quite_white"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/controls_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/progressBar"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
         android:visibility="gone">
 
         <ImageButton
-            android:id="@+id/back_play"
+            android:id="@+id/alarm1"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@color/transparent"
@@ -171,7 +130,7 @@
             android:src="@drawable/fast_rewind" />
 
         <ImageButton
-            android:id="@+id/pause_play"
+            android:id="@+id/alarm2"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@color/transparent"
@@ -181,7 +140,17 @@
             android:src="@drawable/pause" />
 
         <ImageButton
-            android:id="@+id/next_play"
+            android:id="@+id/alarm3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/next"
+            android:foreground="?android:selectableItemBackground"
+            android:scaleType="fitXY"
+            android:src="@drawable/fast_forward" />
+
+        <ImageButton
+            android:id="@+id/alarm4"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@color/transparent"

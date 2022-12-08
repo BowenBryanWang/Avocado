@@ -41,7 +41,7 @@ public class BatteryPlugin extends BasePlugin {
         ctx = context;
         ctx.registerReceiver(mBroadcastReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
         //这里的intentFilter是一个action，这个action是系统定义好的，我们只要监听这个action就可以了
-    }
+    }//每个plugin都需要onCreate方法，作用是初始化并在需要时注册广播接收器
 
     private View mView;
     //这里定义的是一个view，这个view就是我们要显示的view，也就是battery的view
