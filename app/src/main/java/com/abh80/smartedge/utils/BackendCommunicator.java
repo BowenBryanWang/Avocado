@@ -6,7 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class BackendCommunicator {
-    private static final String BACKEND_URL = "http://192.168.7.74:5000";
+    private static final String BACKEND_URL = "http://192.168.7.74:5000/";
 
     public String sendRequest(String endpoint) {
         StringBuilder response = new StringBuilder();

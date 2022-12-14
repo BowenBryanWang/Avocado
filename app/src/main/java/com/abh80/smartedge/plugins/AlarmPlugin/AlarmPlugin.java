@@ -47,8 +47,6 @@ public class AlarmPlugin extends BasePlugin{
         mView = LayoutInflater.from(ctx).inflate(R.layout.alarm_layout, null);
         ctx = context;
         init();
-
-
     }
 
     private View mView;

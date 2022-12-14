@@ -6,44 +6,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingVertical="5dp">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/cover"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="8dp"
-            android:contentDescription="@string/cover"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.circleImageView" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/relativeLayout4"
-        android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/blank_space"
-        android:clickable="false"
-        android:focusable="false"
-        android:paddingVertical="5dp"
-        tools:ignore="RtlSymmetry,UselessLeaf">
-
-        <com.abh80.smartedge.plugins.MediaSession.SongVisualizer
-            android:id="@+id/visualizer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:clickable="false"
-            android:focusable="false" />
-
-    </RelativeLayout>
-
 
     <LinearLayout
         android:id="@+id/blank_space"
@@ -51,7 +13,9 @@
         android:layout_height="match_parent"
         android:minWidth="50dp"
         android:orientation="horizontal"
-        android:visibility="visible" />
+        android:visibility="visible" >
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/text_info"
@@ -59,9 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="20dp"
-        android:layout_toEndOf="@id/relativeLayout"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -111,52 +74,132 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <GridLayout
         android:id="@+id/controls_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="visible">
 
-        <ImageButton
-            android:id="@+id/alarm1"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/back"
-            android:foreground="?android:selectableItemBackground"
-            android:scaleType="fitXY"
-            android:src="@drawable/fast_rewind" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
 
-        <ImageButton
-            android:id="@+id/alarm2"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/pause_play"
-            android:foreground="?android:selectableItemBackground"
-            android:scaleType="fitXY"
-            android:src="@drawable/pause" />
+            <ImageButton
+                android:id="@+id/alarm0"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:contentDescription="@string/back"
+                android:foreground="?android:selectableItemBackground"
+                android:scaleType="fitXY"
+                android:src="@drawable/fast_rewind" />
 
-        <ImageButton
-            android:id="@+id/alarm3"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/next"
-            android:foreground="?android:selectableItemBackground"
-            android:scaleType="fitXY"
-            android:src="@drawable/fast_forward" />
+            <TextView
+                android:id="@+id/time0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="7:30"
+                android:textAlignment="center" />
 
-        <ImageButton
-            android:id="@+id/alarm4"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@color/transparent"
-            android:contentDescription="@string/next"
-            android:foreground="?android:selectableItemBackground"
-            android:scaleType="fitXY"
-            android:src="@drawable/fast_forward" />
-    </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/alarm1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:contentDescription="@string/back"
+                android:foreground="?android:selectableItemBackground"
+                android:scaleType="fitXY"
+                android:src="@drawable/fast_rewind" />
+
+            <TextView
+                android:id="@+id/time1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="8:00"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/alarm2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:contentDescription="@string/pause_play"
+                android:foreground="?android:selectableItemBackground"
+                android:scaleType="fitXY"
+                android:src="@drawable/pause" />
+
+            <TextView
+                android:id="@+id/time2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="8:30"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/alarm3"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:contentDescription="@string/next"
+                android:foreground="?android:selectableItemBackground"
+                android:scaleType="fitXY"
+                android:src="@drawable/fast_forward" />
+
+            <TextView
+                android:id="@+id/time3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="9:00"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/alarm4"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/transparent"
+                android:contentDescription="@string/next"
+                android:foreground="?android:selectableItemBackground"
+                android:scaleType="fitXY"
+                android:src="@drawable/fast_forward" />
+
+            <TextView
+                android:id="@+id/time4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="9:30"
+                android:textAlignment="center" />
+        </LinearLayout>
+    </GridLayout>
 </RelativeLayout>
