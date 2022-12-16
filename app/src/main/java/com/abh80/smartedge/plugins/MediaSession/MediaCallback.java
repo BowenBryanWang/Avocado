@@ -13,7 +13,7 @@ public class MediaCallback extends MediaController.Callback {
     public MediaCallback(MediaController mCurrent, MediaSessionPlugin context) {
         this.mCurrent = mCurrent;
         this.ctx = context;
-        try {
+        try {//林：在media已启动的情况下，获取是否在播放中，暂时存储（？）
             isPlaying = mCurrent.getPlaybackState().getState() == PlaybackState.STATE_PLAYING;
             mediaMetadata = mCurrent.getMetadata();
             updateView();

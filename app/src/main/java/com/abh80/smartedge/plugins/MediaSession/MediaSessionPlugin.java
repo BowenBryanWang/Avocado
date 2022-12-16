@@ -214,7 +214,7 @@ public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获�
 
         mediaSessionManager = (MediaSessionManager) ctx.getSystemService(Context.MEDIA_SESSION_SERVICE);//获取我们的mediaSessionManager
         mediaSessionManager.addOnActiveSessionsChangedListener(listnerForActiveSessions, new//添加我们的活跃的会话改变的监听器
-
+                //林：应该就是在这里进行了监听和弹出  TODO
                 ComponentName(ctx, NotiService.class));//设置我们的组件名为我们的NotiService
         mediaSessionManager.getActiveSessions(new
 
@@ -269,7 +269,7 @@ public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获�
         text_info = mView.findViewById(R.id.text_info);
         controls_holder = mView.findViewById(R.id.controls_holder);
 
-        pause_play.setOnClickListener(l -> {
+        pause_play.setOnClickListener(l -> {//林：播放、暂停
             if (mCurrent == null) return;
             if (mCurrent.getPlaybackState().getState() == PlaybackState.STATE_PAUSED) {
                 mCurrent.getTransportControls().play();
@@ -290,11 +290,11 @@ public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获�
         pause_play.setImageTintList(ColorStateList.valueOf(ctx.textColor));
         seekBar.getProgressDrawable().setColorFilter(ctx.textColor, PorterDuff.Mode.SRC_ATOP);
 
-        next.setOnClickListener(l -> {
+        next.setOnClickListener(l -> {//林：下一首
             if (mCurrent == null) return;
             mCurrent.getTransportControls().skipToNext();
         });
-        back.setOnClickListener(l -> {
+        back.setOnClickListener(l -> {//林：上一首
             if (mCurrent == null) return;
             mCurrent.getTransportControls().skipToPrevious();
         });
@@ -510,9 +510,9 @@ public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获�
     }
 
 
-    private void animateChild(boolean expanding, int h) {
-        View view1 = cover;
-        View view2 = visualizer;
+    private void animateChild(boolean expanding, int h) {//林：expanding开启下的动态高度
+        View view1 = cover;//林：模式1（小窗）
+        View view2 = visualizer;//林：模式2（展开）
 
         ValueAnimator height_anim = ValueAnimator.ofInt(view1.getHeight(), h);
         height_anim.setDuration(500);
