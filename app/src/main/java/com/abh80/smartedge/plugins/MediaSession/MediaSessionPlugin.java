@@ -168,7 +168,7 @@ public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获�
     private MediaSessionManager mediaSessionManager;
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    public void onPlayerPaused(boolean b) {
+    public void onPlayerPaused(boolean b) {//林：暂停
         if (expanded && b) {
             pause_play.setImageDrawable(ctx.getDrawable(R.drawable.avd_pause_to_play));
             pause_play.setImageTintList(ColorStateList.valueOf(ctx.textColor));
@@ -193,12 +193,12 @@ public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获�
     @Override
     public String getID() {
         return "MediaSessionPlugin";
-    }
+    } //林：不太清楚这个函数的用处
 
     private MediaSessionManager.OnActiveSessionsChangedListener listnerForActiveSessions = list -> {
         list.forEach(x -> {
-            if (callbackMap.get(x.getPackageName()) != null) return;
-            MediaCallback c = new MediaCallback(x, this);
+            if (callbackMap.get(x.getPackageName()) != null) return;//林：如果已经灵动岛占用，什么都不做
+            MediaCallback c = new MediaCallback(x, this);//林：否则，创建media
             callbackMap.put(x.getPackageName(), c);
             x.registerCallback(c);
         });
