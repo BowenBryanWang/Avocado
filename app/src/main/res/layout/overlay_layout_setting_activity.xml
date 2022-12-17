@@ -342,7 +342,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_outline_refresh_24"
-                android:text="@string/reset" />
+                android:text="重置" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

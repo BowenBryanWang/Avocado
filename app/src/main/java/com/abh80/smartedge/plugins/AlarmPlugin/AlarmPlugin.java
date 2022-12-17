@@ -1,13 +1,13 @@
 package com.abh80.smartedge.plugins.AlarmPlugin;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ValueAnimator;
+import static android.content.ContentValues.TAG;
+
 import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.abh80.smartedge.R;
@@ -16,12 +16,15 @@ import com.abh80.smartedge.services.NotiService;
 import com.abh80.smartedge.services.OverlayService;
 import com.abh80.smartedge.utils.SettingStruct;
 
-//该文件是实现对于系统闹钟的读取和设置
-
 import java.util.ArrayList;
 import java.util.Calendar;
-//倒入PendingIntent类
-import android.app.PendingIntent;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+
+
+
 //在该插件中，我们要完成的功能是：
 //1，检测到用户睡眠前，弹出悬浮岛，并且显示用户可能明天需要设置的闹钟
 //2，用户选择闹钟后，设置闹钟
@@ -32,21 +35,31 @@ import android.app.PendingIntent;
 public class AlarmPlugin extends BasePlugin{
     @Override
     public String getID() {
-        return "AlarmManager";
+        return "AlarmPlugin";
     }
 
     @Override
     public String getName() {
-        return "Alarm Manager";
+        return "Alarm Plugin";
     }
 
     private OverlayService ctx;
 
+    private Socket socket;
     @Override
     public void onCreate(OverlayService context) {
         mView = LayoutInflater.from(ctx).inflate(R.layout.alarm_layout, null);
         ctx = context;
         init();
+        socket = IO.socket("http://localhost:5000");
+        socket.on("message", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                String message = (String) args[0];
+                Log.d(TAG, "received message: " + message);
+            }
+        });
+        socket.connect();
     }
 
     private View mView;

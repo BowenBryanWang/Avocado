@@ -31,6 +31,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+//import TextView
+import android.widget.TextView;
+//import InetAddress
+import java.net.InetAddress;
+
+
 
 import com.abh80.smartedge.BuildConfig;
 import com.abh80.smartedge.R;
@@ -43,15 +49,38 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import java.net.NetworkInterface;
+import java.net.Inet4Address;
+import android.util.Log;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
     private SharedPreferences sharedPreferences;
     private final ArrayList<SettingStruct> settings = new ArrayList<>();
-
+    //完成一个获取本机ip地址的函数
+    public  String getLocalIpAddress() {
+        try {
+            for (java.util.Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (java.util.Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            Log.e("WifiPreference IpAddress", ex.toString());
+        }
+        return null;
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             if (sharedPreferences.getBoolean("clip_copy_enabled", true)) {
                 ClipboardManager clipboard = (ClipboardManager)
@@ -65,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         init();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         if ((Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners") != null && !Settings.Secure.getString(this.getContentResolver(), "enabled_notification_listeners").contains(getApplicationContext().getPackageName())
         ) || ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             startActivity(new Intent(this, PermissionActivity.class));
@@ -152,6 +183,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             settings.add(null);
         });
         RecylerViewSettingsAdapter adapter = new RecylerViewSettingsAdapter(this, settings);
+        TextView textViewIp = (TextView) findViewById(R.id.ip);
+        //获取本机的ip地址
+        textViewIp.setText("本机IP地址："+getLocalIpAddress());
+
+
+
+        TextView textViewPort = (TextView) findViewById(R.id.port);
+        int port = 8080; // 这里可以根据需要设置端口号
+        textViewPort.setText("端口："+String.valueOf(port));
+
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
