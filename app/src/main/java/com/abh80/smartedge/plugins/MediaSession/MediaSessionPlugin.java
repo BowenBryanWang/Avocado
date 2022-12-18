@@ -374,7 +374,6 @@ public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获�
         DisplayMetrics metrics = ctx.metrics;
         ctx.animateOverlay(ctx.dpToInt(210), metrics.widthPixels - ctx.dpToInt(15), expanded, OverLayCallBackStart, overLayCallBackEnd, onChange, false);
         animateChild(true, ctx.dpToInt(76));
-
     }
 
     LinearLayout text_info;

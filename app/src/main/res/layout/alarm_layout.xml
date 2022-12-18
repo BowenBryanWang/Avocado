@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:minWidth="50dp"
         android:orientation="horizontal"
-        android:visibility="visible" >
+        android:visibility="visible">
 
     </LinearLayout>
 
@@ -29,6 +29,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center|fill"
+            android:clickable="true"
+            android:longClickable="false"
             tools:ignore="UselessParent">
 
             <TextView
@@ -83,7 +86,7 @@
         android:visibility="visible">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="56dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="visible">
@@ -96,7 +99,7 @@
                 android:contentDescription="@string/back"
                 android:foreground="?android:selectableItemBackground"
                 android:scaleType="fitXY"
-                android:src="@drawable/fast_rewind" />
+                android:src="@drawable/alarm_off" />
 
             <TextView
                 android:id="@+id/time0"
@@ -108,7 +111,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="55dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="visible">
@@ -121,7 +124,7 @@
                 android:contentDescription="@string/back"
                 android:foreground="?android:selectableItemBackground"
                 android:scaleType="fitXY"
-                android:src="@drawable/fast_rewind" />
+                android:src="@drawable/alarm_off" />
 
             <TextView
                 android:id="@+id/time1"
@@ -133,7 +136,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="54dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -145,7 +148,7 @@
                 android:contentDescription="@string/pause_play"
                 android:foreground="?android:selectableItemBackground"
                 android:scaleType="fitXY"
-                android:src="@drawable/pause" />
+                android:src="@drawable/alarm_off" />
 
             <TextView
                 android:id="@+id/time2"
@@ -156,7 +159,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="55dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -168,7 +171,7 @@
                 android:contentDescription="@string/next"
                 android:foreground="?android:selectableItemBackground"
                 android:scaleType="fitXY"
-                android:src="@drawable/fast_forward" />
+                android:src="@drawable/alarm_off" />
 
             <TextView
                 android:id="@+id/time3"
@@ -192,7 +195,7 @@
                 android:contentDescription="@string/next"
                 android:foreground="?android:selectableItemBackground"
                 android:scaleType="fitXY"
-                android:src="@drawable/fast_forward" />
+                android:src="@drawable/alarm_off" />
 
             <TextView
                 android:id="@+id/time4"
