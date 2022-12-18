@@ -5,9 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.AlarmManager;
 import android.content.Intent;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import com.abh80.smartedge.plugins.BasePlugin;
 import com.abh80.smartedge.services.NotiService;
 import com.abh80.smartedge.services.OverlayService;
 import com.abh80.smartedge.utils.SettingStruct;
+import com.google.android.material.imageview.ShapeableImageView;
 
 //该文件是实现对于系统闹钟的读取和设置
 
@@ -85,6 +88,8 @@ public class AlarmPlugin extends BasePlugin{
     }
     private void init(){
         title = mView.findViewById(R.id.title);
+        cover = mView.findViewById(R.id.cover);
+
         times[0] = mView.findViewById(R.id.time0);
         times[1] = mView.findViewById(R.id.time1);
         times[2] = mView.findViewById(R.id.time2);
@@ -179,9 +184,55 @@ public class AlarmPlugin extends BasePlugin{
     public void onDestroy() {
 
     }
+    private boolean expanded=false;
+    private ShapeableImageView cover;
 
     @Override
     public void onExpand() {
+        if (expanded) return;
+        expanded = true;
+        DisplayMetrics metrics = ctx.metrics;
+        ctx.animateOverlay2(ctx.dpToInt(210), metrics.widthPixels - ctx.dpToInt(15), expanded);
+        animateChild(true, ctx.dpToInt(76));
+    }
+    private void animateChild(boolean expanding, int h) {//林：expanding开启下的动态高度
+        View view1 = cover;
+//        View view2 = visualizer;
+
+        ValueAnimator height_anim = ValueAnimator.ofInt(view1.getHeight(), h);
+        height_anim.setDuration(500);
+        height_anim.addUpdateListener(valueAnimator -> {
+            ViewGroup.LayoutParams params1 = view1.getLayoutParams();
+//            ViewGroup.LayoutParams params2 = view2.getLayoutParams();
+            params1.height = (int) valueAnimator.getAnimatedValue();
+//            params2.height = (int) valueAnimator.getAnimatedValue();
+            params1.width = (int) valueAnimator.getAnimatedValue();
+//            params2.width = (int) valueAnimator.getAnimatedValue();
+            view1.setLayoutParams(params1);
+//            view2.setLayoutParams(params2);
+        });
+        height_anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (!expanding) {
+//                    view2.setVisibility(View.VISIBLE);
+//                    visualizer.paused = false;
+                }
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                if (expanding) {
+//                    view2.setVisibility(View.GONE);
+//                    visualizer.paused = true;
+                }
+            }
+        });
+        height_anim.setInterpolator(new OvershootInterpolator(0.5f));
+        height_anim.start();
+
 
     }
 

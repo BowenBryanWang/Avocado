@@ -7,6 +7,23 @@
     android:layout_height="wrap_content">
 
 
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingVertical="5dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/cover"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/cover"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.circleImageView" />
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/blank_space"
         android:layout_width="wrap_content"
