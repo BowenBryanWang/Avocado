@@ -16,6 +16,7 @@ import com.abh80.smartedge.services.NotiService;
 import com.abh80.smartedge.services.OverlayService;
 import com.abh80.smartedge.utils.SettingStruct;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -47,10 +48,14 @@ public class AlarmPlugin extends BasePlugin{
 
     private Socket socket;
     @Override
-    public void onCreate(OverlayService context) {
+    public void onCreate(OverlayService context) throws URISyntaxException {
         mView = LayoutInflater.from(ctx).inflate(R.layout.alarm_layout, null);
         ctx = context;
         init();
+        NetInit();
+
+    }
+    public void NetInit() throws URISyntaxException {
         socket = IO.socket("http://localhost:5000");
         socket.on("message", new Emitter.Listener() {
             @Override

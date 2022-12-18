@@ -48,6 +48,7 @@ import com.abh80.smartedge.R;
 import com.google.android.material.color.DynamicColors;
 
 
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -324,7 +325,13 @@ public class OverlayService extends AccessibilityService {
             return false;
         });
         plugins.forEach(x -> {
-            if (sharedPreferences.getBoolean(x.getID() + "_enabled", true)) x.onCreate(this);
+            if (sharedPreferences.getBoolean(x.getID() + "_enabled", true)) {
+                try {
+                    x.onCreate(this);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
         });
         binded_plugin = null;
         bindPlugin();

@@ -6,6 +6,7 @@ import android.view.accessibility.AccessibilityEvent;
 import com.abh80.smartedge.services.OverlayService;
 import com.abh80.smartedge.utils.SettingStruct;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public abstract class BasePlugin {
@@ -13,7 +14,7 @@ public abstract class BasePlugin {
 
     public abstract String getName();
 
-    public abstract void onCreate(OverlayService context);
+    public abstract void onCreate(OverlayService context) throws URISyntaxException;
 
     public abstract View onBind();
 
