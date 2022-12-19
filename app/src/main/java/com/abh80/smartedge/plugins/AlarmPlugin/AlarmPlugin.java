@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.AlarmManager;
 import android.content.Intent;
+import android.provider.AlarmClock;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,22 +71,50 @@ public class AlarmPlugin extends BasePlugin{
     }
     private TextView title;
     //    #alarms应该是四个闹钟的列表
-    private TextView[] times = new TextView[5];
-    private ImageView[] alarms = new ImageView[5];
+    private TextView[] times = new TextView[4];
+    private ImageView[] alarms = new ImageView[4];
 
     private AlarmManager alarmManager;
 
     public void setAlarm(int hour, int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        Intent intent = new Intent(ctx, NotiService.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0, intent, 0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        calendar.set(Calendar.HOUR_OF_DAY, hour);
+//        calendar.set(Calendar.MINUTE, minute);
+//        calendar.set(Calendar.SECOND, 0);
+//        calendar.set(Calendar.MILLISECOND, 0);
+//        Intent intent = new Intent(ctx, NotiService.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0, intent, 0);
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM)
+                //闹钟的小时
+                .putExtra(AlarmClock.EXTRA_HOUR, hour)
+                //闹钟的分钟
+                .putExtra(AlarmClock.EXTRA_MINUTES, minute)
+                //响铃时提示的信息
+//                .putExtra(AlarmClock.EXTRA_MESSAGE, message)
+                //用于指定该闹铃触发时是否振动
+                .putExtra(AlarmClock.EXTRA_VIBRATE, true)
+                //一个 content: URI，用于指定闹铃使用的铃声，也可指定 VALUE_RINGTONE_SILENT 以不使用铃声。
+                //如需使用默认铃声，则无需指定此 extra。
+//                .putExtra(AlarmClock.EXTRA_RINGTONE, ringtoneUri)
+                //一个 ArrayList，其中包括应重复触发该闹铃的每个周日。
+                // 每一天都必须使用 Calendar 类中的某个整型值（如 MONDAY）进行声明。
+                //对于一次性闹铃，无需指定此 extra
+//                .putExtra(AlarmClock.EXTRA_DAYS, testDays)
+                //如果为true，则调用startActivity()不会进入手机的闹钟设置界面
+                .putExtra(AlarmClock.EXTRA_SKIP_UI, true);
+        //设置闹钟//TODO
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try {
+            Log.d("AlarmPlugin", "setAlarm: " + hour + " " + minute);
+            ctx.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+    private int alarmSet = 0;
     private void init(){
         title = mView.findViewById(R.id.title);
         cover = mView.findViewById(R.id.cover);
@@ -93,13 +123,11 @@ public class AlarmPlugin extends BasePlugin{
         times[1] = mView.findViewById(R.id.time1);
         times[2] = mView.findViewById(R.id.time2);
         times[3] = mView.findViewById(R.id.time3);
-        times[4] = mView.findViewById(R.id.time4);
         alarms[0] = mView.findViewById(R.id.alarm0);
         alarms[1] = mView.findViewById(R.id.alarm1);
         alarms[2] = mView.findViewById(R.id.alarm2);
         alarms[3] = mView.findViewById(R.id.alarm3);
-        alarms[4] = mView.findViewById(R.id.alarm4);
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             int finalI = i;
             alarms[i].setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -108,20 +136,28 @@ public class AlarmPlugin extends BasePlugin{
                     if (alarms[finalI].getTag() == null) {
                         alarms[finalI].setImageResource(R.drawable.alarm_on);
                         alarms[finalI].setTag("on");
+                        String text = times[finalI].getText().toString();
+                        String[] split = text.split(":");
+                        int hour = Integer.parseInt(split[0]);
+                        int minute = Integer.parseInt(split[1]);
+                        setAlarm(hour,minute);
+                        alarmSet++;
                     } else {
                         //如果该闹钟已经设置，则取消该闹钟
                         alarms[finalI].setImageResource(R.drawable.alarm_off);
                         alarms[finalI].setTag(null);
+                        String text = times[finalI].getText().toString();
+                        String[] split = text.split(":");
+                        int hour = Integer.parseInt(split[0]);
+                        int minute = Integer.parseInt(split[1]);
+//                        delAlarm(hour,minute);
+                        alarmSet--;
                     }
                 }
             });
         }
 
 
-        title.setText("设置闹钟");
-        for (int i = 0; i < 5; i++) {
-            times[i].setText("8:00");
-        }
         ctx.enqueue(this);
         alarmManager = (AlarmManager) ctx.getSystemService(ctx.ALARM_SERVICE);
 
@@ -131,7 +167,7 @@ public class AlarmPlugin extends BasePlugin{
     private void updateView(){
         if (mView == null) return;
         title.setText("设置闹钟");
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             times[i].setText("8:00");
         }
     }
@@ -187,10 +223,9 @@ public class AlarmPlugin extends BasePlugin{
         ctx.animateOverlay2(ctx.dpToInt(210), metrics.widthPixels - ctx.dpToInt(15), expanded);
         animateChild(true, ctx.dpToInt(76));
         //参考alarm_layout.xml,希望悬浮窗收缩的时候不显示内容，而展开时显示内容
-        //显示text_info
+
         mView.findViewById(R.id.content).setVisibility(View.VISIBLE);
-        //显示controls_holder
-        mView.findViewById(R.id.controls_holder).setVisibility(View.VISIBLE);
+        mView.findViewById(R.id.small).setVisibility(View.GONE);
 
     }
     private void animateChild(boolean expanding, int h) {//林：expanding开启下的动态高度
@@ -241,7 +276,7 @@ public class AlarmPlugin extends BasePlugin{
         ctx.animateOverlay2(ctx.minHeight, ViewGroup.LayoutParams.WRAP_CONTENT, expanded);
         animateChild(false, ctx.dpToInt(ctx.minHeight / 4));
         mView.findViewById(R.id.content).setVisibility(View.GONE);
-        mView.findViewById(R.id.controls_holder).setVisibility(View.GONE);
+        mView.findViewById(R.id.small).setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -9,12 +9,46 @@
 
     <LinearLayout
         android:id="@+id/blank_space"
-        android:layout_width="94dp"
-        android:layout_height="match_parent"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:minWidth="50dp"
         android:orientation="horizontal"
         android:visibility="visible">
 
+        <LinearLayout
+            android:id="@+id/small"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/come"
+                android:layout_width="9dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:contentDescription="@string/back"
+                android:foreground="?android:selectableItemBackground"
+                android:scaleType="fitCenter"
+                android:src="@drawable/sleep" />
+
+            <TextView
+                android:id="@+id/inside"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:fontFamily="@font/alibaba"
+                android:text="睡前闹钟"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout
@@ -108,39 +142,61 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10sp"
-            android:layout_marginLeft="20sp"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:layout_marginTop="7sp"
+            android:layout_marginBottom="5sp"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/Title"
+            <ImageButton
+                android:id="@+id/clock"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/transparent"
+                android:contentDescription="@string/back"
+                android:foreground="?android:selectableItemBackground"
+                android:scaleType="fitXY"
+                android:src="@drawable/clock" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="serif-monospace"
-                android:text="设置闹钟"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:textSize="36sp"
-                android:textStyle="bold" />
+                android:layout_margin="10sp"
+                android:layout_marginLeft="20sp"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="夜已深，一键设置闹钟吧～" />
+                <TextView
+                    android:id="@+id/Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/alibaba"
+                    android:text="设置闹钟"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textSize="32dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/alibaba"
+                    android:text="夜已深，一键设置闹钟吧～" />
+            </LinearLayout>
         </LinearLayout>
 
         <GridLayout
             android:id="@+id/controls_holder"
-            android:layout_width="wrap_content"
+            android:layout_width="268dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="horizontal"
-            android:paddingLeft="10sp">
+            android:paddingLeft="5sp">
 
             <LinearLayout
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -233,28 +289,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <ImageButton
-                    android:id="@+id/alarm4"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@color/transparent"
-                    android:contentDescription="@string/next"
-                    android:foreground="?android:selectableItemBackground"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/alarm_off" />
-
-                <TextView
-                    android:id="@+id/time4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="9:30"
-                    android:textAlignment="center" />
-            </LinearLayout>
         </GridLayout>
 
     </LinearLayout>
