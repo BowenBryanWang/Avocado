@@ -56,7 +56,6 @@ public class AlarmPlugin extends BasePlugin{
         //1. 到点弹出激活？
         //2. 还是一直后台运行该插件，到点改变视图（弹出悬浮窗）？
         //实现1在此处更方便，onCreate 和 onBind 应用不同
-//        ctx.enqueue(this);
         init();//初始化我们的插件
     }
 
@@ -132,16 +131,9 @@ public class AlarmPlugin extends BasePlugin{
     private void updateView(){
         if (mView == null) return;
         title.setText("设置闹钟");
-//        for (int i = 0; i < alarms.length; i++) {
-//            alarms[i].setText("闹钟" + i);
-//            alarms[i].setOnClickListener(l->{   //按钮响应，不知道对否???
-//                //获得传入的时钟和分钟
-//                // TODO
-//                int hour = 8;
-//                int minute = 0;
-//                setAlarm(hour, minute);
-//            });
-//        }
+        for (int i = 0; i < 5; i++) {
+            times[i].setText("8:00");
+        }
     }
 
     // 检测用户是否睡眠前的定时任务
@@ -186,14 +178,20 @@ public class AlarmPlugin extends BasePlugin{
     }
     private boolean expanded=false;
     private ShapeableImageView cover;
-
     @Override
     public void onExpand() {
+
         if (expanded) return;
         expanded = true;
         DisplayMetrics metrics = ctx.metrics;
         ctx.animateOverlay2(ctx.dpToInt(210), metrics.widthPixels - ctx.dpToInt(15), expanded);
         animateChild(true, ctx.dpToInt(76));
+        //参考alarm_layout.xml,希望悬浮窗收缩的时候不显示内容，而展开时显示内容
+        //显示text_info
+        mView.findViewById(R.id.content).setVisibility(View.VISIBLE);
+        //显示controls_holder
+        mView.findViewById(R.id.controls_holder).setVisibility(View.VISIBLE);
+
     }
     private void animateChild(boolean expanding, int h) {//林：expanding开启下的动态高度
         View view1 = cover;
@@ -238,7 +236,12 @@ public class AlarmPlugin extends BasePlugin{
 
     @Override
     public void onCollapse() {
-
+        if (!expanded) return;
+        expanded = false;
+        ctx.animateOverlay2(ctx.minHeight, ViewGroup.LayoutParams.WRAP_CONTENT, expanded);
+        animateChild(false, ctx.dpToInt(ctx.minHeight / 4));
+        mView.findViewById(R.id.content).setVisibility(View.GONE);
+        mView.findViewById(R.id.controls_holder).setVisibility(View.GONE);
     }
 
     @Override
