@@ -24,11 +24,15 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 //该文件是实现对于系统闹钟的读取和设置
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 //倒入PendingIntent类
 import android.app.PendingIntent;
 import android.os.Handler;
+
+
 //在该插件中，我们要完成的功能是：
 //1，检测到用户睡眠前，弹出悬浮岛，并且显示用户可能明天需要设置的闹钟
 //2，用户选择闹钟后，设置闹钟
@@ -48,9 +52,8 @@ public class AlarmPlugin extends BasePlugin{
     }
 
     private OverlayService ctx;
-
     @Override
-    public void onCreate(OverlayService context) {
+    public void onCreate(OverlayService context) throws URISyntaxException {
         ctx = context;
         mHandler = new Handler(context.getMainLooper());//创建我们的handler
         mView = LayoutInflater.from(context).inflate(R.layout.alarm_layout, null);//创建我们的视图
@@ -65,8 +68,7 @@ public class AlarmPlugin extends BasePlugin{
 
     @Override
     public View onBind() {
-         mView = LayoutInflater.from(ctx).inflate(R.layout.alarm_layout, null);
-         init();
+        mView = LayoutInflater.from(ctx).inflate(R.layout.alarm_layout, null);
         return mView;
     }
     private TextView title;
@@ -77,15 +79,6 @@ public class AlarmPlugin extends BasePlugin{
     private AlarmManager alarmManager;
 
     public void setAlarm(int hour, int minute) {
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-//        calendar.set(Calendar.HOUR_OF_DAY, hour);
-//        calendar.set(Calendar.MINUTE, minute);
-//        calendar.set(Calendar.SECOND, 0);
-//        calendar.set(Calendar.MILLISECOND, 0);
-//        Intent intent = new Intent(ctx, NotiService.class);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, 0, intent, 0);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM)
                 //闹钟的小时
                 .putExtra(AlarmClock.EXTRA_HOUR, hour)
@@ -115,7 +108,8 @@ public class AlarmPlugin extends BasePlugin{
         }
     }
     private int alarmSet = 0;
-    private void init(){
+    private void init() throws URISyntaxException {
+
         title = mView.findViewById(R.id.title);
         cover = mView.findViewById(R.id.cover);
 
@@ -156,19 +150,20 @@ public class AlarmPlugin extends BasePlugin{
                 }
             });
         }
-
-
-        ctx.enqueue(this);
+//        ctx.enqueue(this);
         alarmManager = (AlarmManager) ctx.getSystemService(ctx.ALARM_SERVICE);
 
         updateView();
     }
 
+    private String[] timesArray = new String[]{"6:00","6:10","6:20","6:30","6:40","6:50","7:00","7:10","7:20","7:30","7:40","7:50","8:00","8:10","8:20","8:30","8:40","8:50","9:00"};
     private void updateView(){
         if (mView == null) return;
         title.setText("设置闹钟");
+//        从timesArray中随机选取4个时间，并设置到times中
         for (int i = 0; i < 4; i++) {
-            times[i].setText("8:00");
+            int random = new Random().nextInt(timesArray.length);
+            times[i].setText(timesArray[random]);
         }
     }
 
@@ -219,6 +214,7 @@ public class AlarmPlugin extends BasePlugin{
 
         if (expanded) return;
         expanded = true;
+        updateView();
         DisplayMetrics metrics = ctx.metrics;
         ctx.animateOverlay2(ctx.dpToInt(210), metrics.widthPixels - ctx.dpToInt(15), expanded);
         animateChild(true, ctx.dpToInt(76));
@@ -226,6 +222,7 @@ public class AlarmPlugin extends BasePlugin{
 
         mView.findViewById(R.id.content).setVisibility(View.VISIBLE);
         mView.findViewById(R.id.small).setVisibility(View.GONE);
+
 
     }
     private void animateChild(boolean expanding, int h) {//林：expanding开启下的动态高度

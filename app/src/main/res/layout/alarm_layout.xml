@@ -24,7 +24,7 @@
             android:visibility="visible">
 
             <ImageButton
-                android:id="@+id/come"
+                android:id="@+id/tag"
                 android:layout_width="9dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
@@ -148,7 +148,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/clock"
+                android:id="@+id/icon"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

@@ -1,9 +1,9 @@
-package com.abh80.smartedge.plugins.MoneyPlugin;
+package com.abh80.smartedge.plugins.TextPlugin;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.app.AlarmManager;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,35 +18,30 @@ import com.abh80.smartedge.services.OverlayService;
 import com.abh80.smartedge.utils.SettingStruct;
 import com.google.android.material.imageview.ShapeableImageView;
 
-//该文件是实现对于系统闹钟的读取和设置
-
+import java.net.URISyntaxException;
 import java.util.ArrayList;
-//倒入PendingIntent类
-import android.os.Handler;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
-public class MoneyPlugin extends BasePlugin{
+public class TextPlugin extends BasePlugin {
     @Override
     public String getID() {
-        return "MoneyPlugin";
+        return "TextPlugin";
     }
 
     @Override
     public String getName() {
-        return "Money Plugin";
+        return "Text Plugin";
     }
 
     private OverlayService ctx;
 
     @Override
-    public void onCreate(OverlayService context) {
+    public void onCreate(OverlayService context) throws URISyntaxException {
         ctx = context;
-        mHandler = new Handler(context.getMainLooper());//创建我们的handler
-        mView = LayoutInflater.from(context).inflate(R.layout.money_layout, null);//创建我们的视图
+        mView = LayoutInflater.from(context).inflate(R.layout.text_layout, null);//创建我们的视图
         mView.findViewById(R.id.blank_space).setVisibility(View.VISIBLE);//设置我们的空白的空间为可见
-        //1. 到点弹出激活？
-        //2. 还是一直后台运行该插件，到点改变视图（弹出悬浮窗）？
-        //实现1在此处更方便，onCreate 和 onBind 应用不同
         init();//初始化我们的插件
     }
 
@@ -54,68 +49,62 @@ public class MoneyPlugin extends BasePlugin{
 
     @Override
     public View onBind() {
-        mView = LayoutInflater.from(ctx).inflate(R.layout.money_layout, null);
-        init();
+        mView = LayoutInflater.from(ctx).inflate(R.layout.text_layout, null);
+
         return mView;
     }
     private TextView title;
     private TextView Desc;
-    private ImageView come;
+    private ImageView tag;
+    private ImageView icon;
     private TextView inside_text;
-    private AlarmManager alarmManager;
+    private Socket mSocket;
+    private boolean ishtml = false;
+    private boolean isagenda = false;
 
-    private void init(){
+    private void init() throws URISyntaxException {
+        try {
+            mSocket = IO.socket("https://baidu.com");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        mSocket.connect();
+        System.out.println(mSocket.connected());
+        //打印以确认连接成功
+        System.out.println("连接成功");
+        //向后端发送一条确认信息
+        mSocket.emit("message", "hello");
+        System.out.println("发送成功");
         title = mView.findViewById(R.id.title);
-        cover = mView.findViewById(R.id.cover);
+        icon  = mView.findViewById(R.id.icon);
         Desc = mView.findViewById(R.id.description);
-        come = mView.findViewById(R.id.tag);
+        cover = mView.findViewById(R.id.cover);
+        tag = mView.findViewById(R.id.tag);
         inside_text = mView.findViewById(R.id.inside);
-//        times[0] = mView.findViewById(R.id.time0);
-//        times[1] = mView.findViewById(R.id.time1);
-//        times[2] = mView.findViewById(R.id.time2);
-//        times[3] = mView.findViewById(R.id.time3);
-//        times[4] = mView.findViewById(R.id.time4);
-//        alarms[0] = mView.findViewById(R.id.alarm0);
-//        alarms[1] = mView.findViewById(R.id.alarm1);
-//        alarms[2] = mView.findViewById(R.id.alarm2);
-//        alarms[3] = mView.findViewById(R.id.alarm3);
-//        alarms[4] = mView.findViewById(R.id.alarm4);
-//        for (int i = 0; i < 5; i++) {
-//            int finalI = i;
-//            alarms[i].setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //如果该闹钟未设置，则设置该闹钟
-//                    if (alarms[finalI].getTag() == null) {
-//                        alarms[finalI].setImageResource(R.drawable.alarm_on);
-//                        alarms[finalI].setTag("on");
-//                    } else {
-//                        //如果该闹钟已经设置，则取消该闹钟
-//                        alarms[finalI].setImageResource(R.drawable.alarm_off);
-//                        alarms[finalI].setTag(null);
-//                    }
-//                }
-//            });
-//        }
 
 
-        inside_text.setText("检测到收入+1000元");
-        come.setImageDrawable(ctx.getDrawable(R.drawable.income));
-//        for (int i = 0; i < 5; i++) {
-//            times[i].setText("8:00");
-//        }
-//        ctx.enqueue(this);
-//        alarmManager = (AlarmManager) ctx.getSystemService(ctx.ALARM_SERVICE);
-
-        updateView();
+        mSocket.on("html", args -> {
+            inside_text.setText("检测到网址");
+            tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
+            ishtml = true;
+            ctx.enqueue(this);
+        });
+        mSocket.on("agenda", args -> {
+            inside_text.setText("检测到提醒事项");
+            tag.setImageDrawable(ctx.getDrawable(R.drawable.agenda));
+            isagenda = true;
+            ctx.enqueue(this);
+        });
+        inside_text.setText("检测到网址");
+        tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
+        ishtml = true;
+        ctx.enqueue(this);
     }
 
     private void updateView(){
         if (mView == null) return;
     }
 
-    // 检测用户是否睡眠前的定时任务
-    private Handler mHandler = new Handler();
 
 
     @Override
@@ -136,9 +125,20 @@ public class MoneyPlugin extends BasePlugin{
         DisplayMetrics metrics = ctx.metrics;
         ctx.animateOverlay2(ctx.dpToInt(100), metrics.widthPixels - ctx.dpToInt(15), expanded);
         animateChild(true, ctx.dpToInt(76));
+//        if (ishtml){
+//            title.setText("检测到网址");
+//            Desc.setText("网页描述");
+//            icon.setImageDrawable(ctx.getDrawable(R.drawable.html));
+//        }
+//        else if (isagenda){
+//            title.setText("检测到提醒事项");
+//            Desc.setText("提醒事项描述");
+//            icon.setImageDrawable(ctx.getDrawable(R.drawable.agenda));
+//        }
         mView.findViewById(R.id.content).setVisibility(View.VISIBLE);
         mView.findViewById(R.id.inside_text).setVisibility(View.GONE);
-
+        mSocket.emit("message", "hello");
+        System.out.println("发送成功");
 
     }
     private void animateChild(boolean expanding, int h) {//林：expanding开启下的动态高度
@@ -189,7 +189,6 @@ public class MoneyPlugin extends BasePlugin{
         ctx.animateOverlay2(ctx.minHeight, ViewGroup.LayoutParams.WRAP_CONTENT, expanded);
         animateChild(false, ctx.dpToInt(ctx.minHeight / 4));
         mView.findViewById(R.id.content).setVisibility(View.GONE);
-        mView.findViewById(R.id.controls_holder).setVisibility(View.GONE);
         mView.findViewById(R.id.inside_text).setVisibility(View.VISIBLE);
     }
 
@@ -207,5 +206,4 @@ public class MoneyPlugin extends BasePlugin{
     public ArrayList<SettingStruct> getSettings() {
         return null;
     }
-
 }

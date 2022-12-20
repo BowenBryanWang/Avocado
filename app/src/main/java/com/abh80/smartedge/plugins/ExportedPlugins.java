@@ -5,6 +5,8 @@ import com.abh80.smartedge.plugins.MediaSession.MediaSessionPlugin;
 import com.abh80.smartedge.plugins.MoneyPlugin.MoneyPlugin;
 import com.abh80.smartedge.plugins.Notification.NotificationPlugin;
 import com.abh80.smartedge.plugins.AlarmPlugin.AlarmPlugin;
+import com.abh80.smartedge.plugins.TextPlugin.TextPlugin;
+
 import java.util.ArrayList;
 
 public class ExportedPlugins {
@@ -15,6 +17,7 @@ public class ExportedPlugins {
         plugins.add(new BatteryPlugin());
         plugins.add(new AlarmPlugin());
         plugins.add(new MoneyPlugin());
+        plugins.add(new TextPlugin());
         return plugins;
     }
 }
