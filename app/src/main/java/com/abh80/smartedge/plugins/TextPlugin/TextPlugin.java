@@ -39,6 +39,7 @@ public class TextPlugin extends BasePlugin {
 
     @Override
     public void onCreate(OverlayService context) throws URISyntaxException {
+        //尝试ping一下服务器，地址为http://192.168.68.96:5000
         ctx = context;
         mView = LayoutInflater.from(context).inflate(R.layout.text_layout, null);//创建我们的视图
         mView.findViewById(R.id.blank_space).setVisibility(View.VISIBLE);//设置我们的空白的空间为可见
@@ -63,18 +64,6 @@ public class TextPlugin extends BasePlugin {
     private boolean isagenda = false;
 
     private void init() throws URISyntaxException {
-        try {
-            mSocket = IO.socket("https://baidu.com");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        mSocket.connect();
-        System.out.println(mSocket.connected());
-        //打印以确认连接成功
-        System.out.println("连接成功");
-        //向后端发送一条确认信息
-        mSocket.emit("message", "hello");
-        System.out.println("发送成功");
         title = mView.findViewById(R.id.title);
         icon  = mView.findViewById(R.id.icon);
         Desc = mView.findViewById(R.id.description);
@@ -83,18 +72,18 @@ public class TextPlugin extends BasePlugin {
         inside_text = mView.findViewById(R.id.inside);
 
 
-        mSocket.on("html", args -> {
-            inside_text.setText("检测到网址");
-            tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
-            ishtml = true;
-            ctx.enqueue(this);
-        });
-        mSocket.on("agenda", args -> {
-            inside_text.setText("检测到提醒事项");
-            tag.setImageDrawable(ctx.getDrawable(R.drawable.agenda));
-            isagenda = true;
-            ctx.enqueue(this);
-        });
+//        mSocket.on("html", args -> {
+//            inside_text.setText("检测到网址");
+//            tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
+//            ishtml = true;
+//            ctx.enqueue(this);
+//        });
+//        mSocket.on("agenda", args -> {
+//            inside_text.setText("检测到提醒事项");
+//            tag.setImageDrawable(ctx.getDrawable(R.drawable.agenda));
+//            isagenda = true;
+//            ctx.enqueue(this);
+//        });
         inside_text.setText("检测到网址");
         tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
         ishtml = true;
@@ -137,6 +126,14 @@ public class TextPlugin extends BasePlugin {
 //        }
         mView.findViewById(R.id.content).setVisibility(View.VISIBLE);
         mView.findViewById(R.id.inside_text).setVisibility(View.GONE);
+        try {
+            System.out.println("mSocket.connected()");
+            mSocket = IO.socket("https://192.168.68.96:5000");
+            mSocket.connect();
+            System.out.println(mSocket.connected());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         mSocket.emit("message", "hello");
         System.out.println("发送成功");
 
