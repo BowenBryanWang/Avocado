@@ -10,7 +10,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "com.abh80.smartedge"
+        applicationId "com.Saltyp0rridge.Avocado"
         minSdk 26
         targetSdk 32
         versionCode 20202

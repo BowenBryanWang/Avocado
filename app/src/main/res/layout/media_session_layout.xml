@@ -34,7 +34,7 @@
         android:paddingVertical="5dp"
         tools:ignore="RtlSymmetry,UselessLeaf">
 
-        <com.abh80.smartedge.plugins.MediaSession.SongVisualizer
+        <com.Saltyp0rridge.Avocado.plugins.MediaSession.SongVisualizer
             android:id="@+id/visualizer"
             android:layout_width="0dp"
             android:layout_height="0dp"
