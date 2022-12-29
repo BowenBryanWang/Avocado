@@ -102,22 +102,22 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         enable_btn.setOnClickListener(l -> {
             Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
             startActivity(intent);
-            Toast.makeText(this, "Installed Apps -> Smart Edge", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Installed Apps -> Avocado", Toast.LENGTH_SHORT).show();
         });
-        settings.add(new SettingStruct("Manage Overlay Layout", "App Settings", SettingStruct.TYPE_CUSTOM) {
+        settings.add(new SettingStruct("设置悬浮岛", "App Settings", SettingStruct.TYPE_CUSTOM) {
             @Override
             public void onClick(Context c) {
                 startActivity(new Intent(MainActivity.this, OverlayLayoutSettingActivity.class));
             }
         });
-        settings.add(new SettingStruct("Overlay color", "App Settings", SettingStruct.TYPE_CUSTOM) {
+        settings.add(new SettingStruct("悬浮岛颜色", "App Settings", SettingStruct.TYPE_CUSTOM) {
             @Override
             public void onClick(Context ctx) {
                 startActivity(new Intent(MainActivity.this, AppearanceActivity.class));
             }
         });
         if (BuildConfig.AUTO_UPDATE)
-            settings.add(new SettingStruct("Enable auto update checking", "App Settings", SettingStruct.TYPE_TOGGLE) {
+            settings.add(new SettingStruct("允许自动更新", "App Settings", SettingStruct.TYPE_TOGGLE) {
                 @Override
                 public boolean onAttach(Context ctx) {
                     return sharedPreferences.getBoolean("update_enabled", true);
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     sharedPreferences.edit().putBoolean("update_enabled", checked).apply();
                 }
             });
-        settings.add(new SettingStruct("Invert long press and click functions", "App Settings", SettingStruct.TYPE_TOGGLE) {
+        settings.add(new SettingStruct("允许点击和长按", "App Settings", SettingStruct.TYPE_TOGGLE) {
             @Override
             public void onCheckChanged(boolean checked, Context ctx) {
                 sharedPreferences.edit().putBoolean("invert_click", checked).apply();
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 return sharedPreferences.getBoolean("invert_click", false);
             }
         });
-        settings.add(new SettingStruct("Enable on lockscreen", "App Settings", SettingStruct.TYPE_TOGGLE) {
+        settings.add(new SettingStruct("允许在锁屏显示", "App Settings", SettingStruct.TYPE_TOGGLE) {
             @Override
             public boolean onAttach(Context ctx) {
                 return sharedPreferences.getBoolean("enable_on_lockscreen", false);
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 sharedPreferences.edit().putBoolean("enable_on_lockscreen", checked).apply();
             }
         });
-        settings.add(new SettingStruct("Copy crash logs to clipboard", "App Settings") {
+        settings.add(new SettingStruct("复制log信息", "App Settings") {
             @Override
             public boolean onAttach(Context ctx) {
                 return sharedPreferences.getBoolean("clip_copy_enabled", true);

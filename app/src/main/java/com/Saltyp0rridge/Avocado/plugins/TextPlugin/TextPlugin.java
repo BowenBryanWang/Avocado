@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +12,14 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.Saltyp0rridge.Avocado.JWebSocketClient;
 import com.Saltyp0rridge.Avocado.R;
 import com.Saltyp0rridge.Avocado.plugins.BasePlugin;
 import com.Saltyp0rridge.Avocado.services.OverlayService;
 import com.Saltyp0rridge.Avocado.utils.SettingStruct;
 import com.google.android.material.imageview.ShapeableImageView;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 
@@ -61,7 +64,7 @@ public class TextPlugin extends BasePlugin {
     private Socket mSocket;
     private boolean ishtml = false;
     private boolean isagenda = false;
-
+    private JWebSocketClient client;
     private void init() throws URISyntaxException {
         title = mView.findViewById(R.id.title);
         icon  = mView.findViewById(R.id.icon);
@@ -69,24 +72,63 @@ public class TextPlugin extends BasePlugin {
         cover = mView.findViewById(R.id.cover);
         tag = mView.findViewById(R.id.tag);
         inside_text = mView.findViewById(R.id.inside);
+        try {
+            System.out.println("mSocket.connected()");
+            mSocket = IO.socket("http://192.168.124.22:5000/test");
+            mSocket.connect();
+            System.out.println(mSocket.connected());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        mSocket.emit("message", "hello");
+        System.out.println("发送成功");
 
-
-//        mSocket.on("html", args -> {
-//            inside_text.setText("检测到网址");
-//            tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
-//            ishtml = true;
-//            ctx.enqueue(this);
-//        });
-//        mSocket.on("agenda", args -> {
-//            inside_text.setText("检测到提醒事项");
-//            tag.setImageDrawable(ctx.getDrawable(R.drawable.agenda));
-//            isagenda = true;
-//            ctx.enqueue(this);
-//        });
+        mSocket.on("html", args -> {
+            inside_text.setText("检测到网址");
+            tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
+            ishtml = true;
+            ctx.enqueue(this);
+        });
+        mSocket.on("agenda", args -> {
+            inside_text.setText("检测到提醒事项");
+            tag.setImageDrawable(ctx.getDrawable(R.drawable.agenda));
+            isagenda = true;
+            ctx.enqueue(this);
+        });
         inside_text.setText("检测到网址");
         tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
         ishtml = true;
+//        URI uri = URI.create("ws://192.168.124.22:5000/echo");
+//        client = new JWebSocketClient(uri) {
+//            @Override
+//            public void onMessage(String message) {
+//                //message就是接收到的消息
+//                Log.e("JWebSClientService", message);
+//            }
+//        };
+//        try {
+//            client.connectBlocking();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        if (client != null && client.isOpen()) {
+//            client.send("hello");
+//        }
         ctx.enqueue(this);
+    }
+    /**
+     * 断开连接
+     */
+    private void closeConnect() {
+        try {
+            if (null != client) {
+                client.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            client = null;
+        }
     }
 
     private void updateView(){
@@ -125,16 +167,7 @@ public class TextPlugin extends BasePlugin {
 //        }
         mView.findViewById(R.id.content).setVisibility(View.VISIBLE);
         mView.findViewById(R.id.inside_text).setVisibility(View.GONE);
-        try {
-            System.out.println("mSocket.connected()");
-            mSocket = IO.socket("https://192.168.68.96:5000");
-            mSocket.connect();
-            System.out.println(mSocket.connected());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        mSocket.emit("message", "hello");
-        System.out.println("发送成功");
+
 
     }
     private void animateChild(boolean expanding, int h) {//林：expanding开启下的动态高度

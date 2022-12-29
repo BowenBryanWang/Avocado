@@ -478,7 +478,7 @@ public class MediaSessionPlugin extends BasePlugin {//这个类的作用是获�
     @Override
     public ArrayList<SettingStruct> getSettings() {
         ArrayList<SettingStruct> s = new ArrayList<>();
-        s.add(new SettingStruct("Open music app on touch when expanded", "Media Session", SettingStruct.TYPE_TOGGLE) {
+        s.add(new SettingStruct("展开时点击进入媒体app", "Media Session", SettingStruct.TYPE_TOGGLE) {
             @Override
             public boolean onAttach(Context ctx) {
                 return ctx.getSharedPreferences(ctx.getPackageName(), Context.MODE_PRIVATE).getBoolean("ms_enable_touch_expanded", false);
