@@ -41,7 +41,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:fontFamily="@font/alibaba"
-                android:text="检测到网址"
+                android:text="检测"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
