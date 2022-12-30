@@ -64,5 +64,8 @@ dependencies {
     implementation 'org.ocpsoft.prettytime:prettytime:5.0.2.Final'
     implementation 'io.socket:socket.io-client:1.0.0'
     implementation "org.java-websocket:Java-WebSocket:1.4.0"
+    implementation "com.squareup.okhttp3:okhttp:4.9.3"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
+
 
 }
