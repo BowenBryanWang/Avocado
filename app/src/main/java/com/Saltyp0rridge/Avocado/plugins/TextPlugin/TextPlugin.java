@@ -5,6 +5,8 @@ import static android.content.ContentValues.TAG;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.DisplayMetrics;
@@ -26,6 +28,7 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 import com.Saltyp0rridge.Avocado.plugins.TextPlugin.ResponseData;
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.URI;
@@ -61,7 +64,7 @@ public class TextPlugin extends BasePlugin {
         mView = LayoutInflater.from(context).inflate(R.layout.text_layout, null);//创建我们的视图
         mView.findViewById(R.id.blank_space).setVisibility(View.VISIBLE);//设置我们的空白的空间为可
         init();//初始化我们的插件
-
+        Log.d(TAG, ishtml+"");
     }
 
     private View mView;
@@ -76,7 +79,7 @@ public class TextPlugin extends BasePlugin {
     private TextView Desc;
     private ImageView tag;
     private ImageView icon;
-    private TextView inside_text;
+    private TextView inside;
     private Socket mSocket;
     private boolean ishtml = false;
     private boolean isagenda = false;
@@ -89,7 +92,7 @@ public class TextPlugin extends BasePlugin {
         Desc = mView.findViewById(R.id.description);
         cover = mView.findViewById(R.id.cover);
         tag = mView.findViewById(R.id.tag);
-        inside_text = mView.findViewById(R.id.inside);
+        inside = mView.findViewById(R.id.inside);
         String BASE_URL = "http://192.168.124.22:5000/detect";
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(1000, TimeUnit.SECONDS)
@@ -117,14 +120,16 @@ public class TextPlugin extends BasePlugin {
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
                         @Override
                         public void run() {
-                            if (responseData.getType().equals("html")){
+                            if (responseData.getType().equals("html")) {
                                 ishtml = true;
                                 html = responseData.getHtml();
                             }
-                            if (ishtml){
-                                Log.d("ishtml", ishtml + "");
-                                Log.d("url", html);
-                                updateView();
+                            if (ishtml) {
+                                Log.d("html", html);
+                                inside.setText("检测到网址");
+                                tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
+                                mView.findViewById(R.id.inside_text).setVisibility(View.VISIBLE);
+                                ctx.enqueue(TextPlugin.this);
                             }
                             return;
                         }
@@ -133,7 +138,6 @@ public class TextPlugin extends BasePlugin {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
                 return;
             }
         }).start();
@@ -141,10 +145,6 @@ public class TextPlugin extends BasePlugin {
 
     private void updateView(){
         if (mView == null) return;
-        ctx.enqueue(this);
-        inside_text.setText("检测到新的网址");
-        tag.setImageDrawable(ctx.getDrawable(R.drawable.html));
-        mView.findViewById(R.id.inside_text).setVisibility(View.VISIBLE);
 
     }
 
@@ -170,8 +170,17 @@ public class TextPlugin extends BasePlugin {
         animateChild(true, ctx.dpToInt(76));
         mView.findViewById(R.id.content).setVisibility(View.VISIBLE);
         mView.findViewById(R.id.inside_text).setVisibility(View.GONE);
-
-
+        mView.findViewById(R.id.icon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+                    intent.setAction("android.intent.action.VIEW");
+                    Uri content_url = Uri.parse(html);
+                    intent.setData(content_url);
+                    ctx.startActivity(intent);
+            }
+        });
     }
     private void animateChild(boolean expanding, int h) {//林：expanding开启下的动态高度
         View view1 = cover;
@@ -222,6 +231,7 @@ public class TextPlugin extends BasePlugin {
         animateChild(false, ctx.dpToInt(ctx.minHeight / 4));
         mView.findViewById(R.id.content).setVisibility(View.GONE);
         mView.findViewById(R.id.inside_text).setVisibility(View.VISIBLE);
+        ctx.dequeue(this);
     }
 
     @Override
