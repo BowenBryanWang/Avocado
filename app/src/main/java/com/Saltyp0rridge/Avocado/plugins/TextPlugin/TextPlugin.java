@@ -68,31 +68,7 @@ public class TextPlugin extends BasePlugin {
     }
 
     private View mView;
-
-    @Override
-    public View onBind() {
-        mView = LayoutInflater.from(ctx).inflate(R.layout.text_layout, null);
-
-        return mView;
-    }
-    private TextView title;
-    private TextView Desc;
-    private ImageView tag;
-    private ImageView icon;
-    private TextView inside;
-    private Socket mSocket;
-    private boolean ishtml = false;
-    private boolean isagenda = false;
-    private JWebSocketClient client;
-    private String html = "";
-    private String agenda = "";
-    private void init() throws URISyntaxException {
-        title = mView.findViewById(R.id.title);
-        icon  = mView.findViewById(R.id.icon);
-        Desc = mView.findViewById(R.id.description);
-        cover = mView.findViewById(R.id.cover);
-        tag = mView.findViewById(R.id.tag);
-        inside = mView.findViewById(R.id.inside);
+    public boolean connect2server(){
         String BASE_URL = "http://192.168.124.22:5000/detect";
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(1000, TimeUnit.SECONDS)
@@ -141,6 +117,41 @@ public class TextPlugin extends BasePlugin {
                 return;
             }
         }).start();
+        return true;
+    }
+
+    @Override
+    public View onBind() {
+        mView = LayoutInflater.from(ctx).inflate(R.layout.text_layout, null);
+
+        return mView;
+    }
+    private TextView title;
+    private TextView Desc;
+    private ImageView tag;
+    private ImageView icon;
+    private TextView inside;
+    private Socket mSocket;
+    private boolean ishtml = false;
+    private boolean isagenda = false;
+    private JWebSocketClient client;
+    private String html = "";
+    private String agenda = "";
+    private void init() throws URISyntaxException {
+        title = mView.findViewById(R.id.title);
+        icon  = mView.findViewById(R.id.icon);
+        Desc = mView.findViewById(R.id.description);
+        cover = mView.findViewById(R.id.cover);
+        tag = mView.findViewById(R.id.tag);
+        inside = mView.findViewById(R.id.inside);
+        //每隔5s调用一次
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                connect2server();
+                new Handler().postDelayed(this, 5000);
+            }
+        }, 5000);
     }
 
     private void updateView(){
