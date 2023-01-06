@@ -101,16 +101,19 @@ public class MoneyPlugin extends BasePlugin{
                                 come_ior=responseData.getCome();
                             }
                             if (ismoney) {
-                                inside.setText("检测到收支");
+                                ctx.enqueue(MoneyPlugin.this);
+                                //获取ctx enqueue后的视图
                                 if (come_ior.equals("income")) {
+                                    inside.setText("检测到收入");
                                     come.setImageDrawable(ctx.getDrawable(R.drawable.income));
+                                    Desc.setText("收入金额为" + money_number + "元");
                                 }
                                 else {
+                                    inside.setText("检测到支出");
                                     come.setImageDrawable(ctx.getDrawable(R.drawable.outcome));
+                                    Desc.setText("支出金额为" + money_number + "元");
                                 }
-
                                 mView.findViewById(R.id.inside_text).setVisibility(View.VISIBLE);
-                                ctx.enqueue(MoneyPlugin.this);
                             }
                             return;
                         }
