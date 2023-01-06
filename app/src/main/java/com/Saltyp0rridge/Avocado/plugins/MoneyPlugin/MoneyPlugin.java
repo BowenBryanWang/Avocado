@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.AlarmManager;
+import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +16,24 @@ import android.widget.TextView;
 
 import com.Saltyp0rridge.Avocado.R;
 import com.Saltyp0rridge.Avocado.plugins.BasePlugin;
+import com.Saltyp0rridge.Avocado.utils.ResponseData;
 import com.Saltyp0rridge.Avocado.services.OverlayService;
 import com.Saltyp0rridge.Avocado.utils.SettingStruct;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.gson.Gson;
 
 //该文件是实现对于系统闹钟的读取和设置
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 //倒入PendingIntent类
 import android.os.Handler;
+
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 public class MoneyPlugin extends BasePlugin{
@@ -41,27 +52,82 @@ public class MoneyPlugin extends BasePlugin{
     @Override
     public void onCreate(OverlayService context) {
         ctx = context;
-        mHandler = new Handler(context.getMainLooper());//创建我们的handler
         mView = LayoutInflater.from(context).inflate(R.layout.money_layout, null);//创建我们的视图
         mView.findViewById(R.id.blank_space).setVisibility(View.VISIBLE);//设置我们的空白的空间为可见
-        //1. 到点弹出激活？
-        //2. 还是一直后台运行该插件，到点改变视图（弹出悬浮窗）？
-        //实现1在此处更方便，onCreate 和 onBind 应用不同
-        init();//初始化我们的插件
+        init();
     }
 
     private View mView;
-
+    private boolean ismoney = false;
+    private String money_number = "";
+    private String come_ior = "";
     @Override
     public View onBind() {
         mView = LayoutInflater.from(ctx).inflate(R.layout.money_layout, null);
         init();
         return mView;
     }
+    public boolean connect2server(){
+        String BASE_URL = "http://192.168.124.22:5000/detect";
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(1000, TimeUnit.SECONDS)
+                .writeTimeout(1000, TimeUnit.SECONDS)
+                .readTimeout(1000, TimeUnit.SECONDS)
+                .build();
+
+        //2. 新建一个Request对象
+        final Request request = new Request.Builder()
+                .url(BASE_URL)
+                .build();
+
+        final Call call = okHttpClient.newCall(request);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //3.Response为 OKHttp 中的响应
+                    Response response = call.execute();
+                    //返回值是python里的dict，用java获取
+                    String responseBodyString = response.body().string();
+                    Log.d("responseBodyString", responseBodyString);
+                    Gson gson = new Gson();
+                    ResponseData responseData = gson.fromJson(responseBodyString, ResponseData.class);
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (responseData.getType().equals("money")) {
+                                ismoney = true;
+                                money_number = responseData.getMoney();
+                                come_ior=responseData.getCome();
+                            }
+                            if (ismoney) {
+                                inside.setText("检测到收支");
+                                if (come_ior.equals("income")) {
+                                    come.setImageDrawable(ctx.getDrawable(R.drawable.income));
+                                }
+                                else {
+                                    come.setImageDrawable(ctx.getDrawable(R.drawable.outcome));
+                                }
+
+                                mView.findViewById(R.id.inside_text).setVisibility(View.VISIBLE);
+                                ctx.enqueue(MoneyPlugin.this);
+                            }
+                            return;
+                        }
+                    });
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+        }).start();
+        return true;
+    }
     private TextView title;
     private TextView Desc;
     private ImageView come;
-    private TextView inside_text;
+    private TextView inside;
     private AlarmManager alarmManager;
 
     private void init(){
@@ -69,44 +135,16 @@ public class MoneyPlugin extends BasePlugin{
         cover = mView.findViewById(R.id.cover);
         Desc = mView.findViewById(R.id.description);
         come = mView.findViewById(R.id.tag);
-        inside_text = mView.findViewById(R.id.inside);
-//        times[0] = mView.findViewById(R.id.time0);
-//        times[1] = mView.findViewById(R.id.time1);
-//        times[2] = mView.findViewById(R.id.time2);
-//        times[3] = mView.findViewById(R.id.time3);
-//        times[4] = mView.findViewById(R.id.time4);
-//        alarms[0] = mView.findViewById(R.id.alarm0);
-//        alarms[1] = mView.findViewById(R.id.alarm1);
-//        alarms[2] = mView.findViewById(R.id.alarm2);
-//        alarms[3] = mView.findViewById(R.id.alarm3);
-//        alarms[4] = mView.findViewById(R.id.alarm4);
-//        for (int i = 0; i < 5; i++) {
-//            int finalI = i;
-//            alarms[i].setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //如果该闹钟未设置，则设置该闹钟
-//                    if (alarms[finalI].getTag() == null) {
-//                        alarms[finalI].setImageResource(R.drawable.alarm_on);
-//                        alarms[finalI].setTag("on");
-//                    } else {
-//                        //如果该闹钟已经设置，则取消该闹钟
-//                        alarms[finalI].setImageResource(R.drawable.alarm_off);
-//                        alarms[finalI].setTag(null);
-//                    }
-//                }
-//            });
-//        }
-
-
-        inside_text.setText("检测到收入+1000元");
+        inside = mView.findViewById(R.id.inside);
+        inside.setText("检测到收入+1000元");
         come.setImageDrawable(ctx.getDrawable(R.drawable.income));
-//        for (int i = 0; i < 5; i++) {
-//            times[i].setText("8:00");
-//        }
-//        ctx.enqueue(this);
-//        alarmManager = (AlarmManager) ctx.getSystemService(ctx.ALARM_SERVICE);
-
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                connect2server();
+                new Handler().postDelayed(this, 8000);
+            }
+        }, 8000);
         updateView();
     }
 
@@ -114,8 +152,6 @@ public class MoneyPlugin extends BasePlugin{
         if (mView == null) return;
     }
 
-    // 检测用户是否睡眠前的定时任务
-    private Handler mHandler = new Handler();
 
 
     @Override
@@ -191,6 +227,7 @@ public class MoneyPlugin extends BasePlugin{
         mView.findViewById(R.id.content).setVisibility(View.GONE);
         mView.findViewById(R.id.controls_holder).setVisibility(View.GONE);
         mView.findViewById(R.id.inside_text).setVisibility(View.VISIBLE);
+        ctx.dequeue(this);
     }
 
     @Override

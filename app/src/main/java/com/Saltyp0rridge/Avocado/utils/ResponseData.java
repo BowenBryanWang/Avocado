@@ -1,8 +1,10 @@
-package com.Saltyp0rridge.Avocado.plugins.TextPlugin;
+package com.Saltyp0rridge.Avocado.utils;
 
 public class ResponseData {
     private String type;
     private String html;
+    private String money;
+    private String come;
 
     public String getType() {
         return type;
@@ -16,8 +18,11 @@ public class ResponseData {
         return html;
     }
 
-    public void setHtml(String html) {
-        this.html = html;
+    public String getMoney() {
+        return money;
+    }
+    public String getCome() {
+        return come;
     }
 }
 

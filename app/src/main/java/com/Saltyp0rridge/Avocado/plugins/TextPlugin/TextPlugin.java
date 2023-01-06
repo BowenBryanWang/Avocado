@@ -1,7 +1,5 @@
 package com.Saltyp0rridge.Avocado.plugins.TextPlugin;
 
-import static android.content.ContentValues.TAG;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -26,20 +24,15 @@ import com.Saltyp0rridge.Avocado.utils.SettingStruct;
 import com.google.android.material.imageview.ShapeableImageView;
 //import ResponseData
 import com.google.gson.Gson;
-import com.Saltyp0rridge.Avocado.plugins.TextPlugin.ResponseData;
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
+import com.Saltyp0rridge.Avocado.utils.ResponseData;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import io.socket.client.IO;
 import io.socket.client.Socket;
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -64,7 +57,6 @@ public class TextPlugin extends BasePlugin {
         mView = LayoutInflater.from(context).inflate(R.layout.text_layout, null);//创建我们的视图
         mView.findViewById(R.id.blank_space).setVisibility(View.VISIBLE);//设置我们的空白的空间为可
         init();//初始化我们的插件
-        Log.d(TAG, ishtml+"");
     }
 
     private View mView;
