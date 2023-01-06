@@ -136,7 +136,7 @@ public class MoneyPlugin extends BasePlugin{
     private void init(){
         title = mView.findViewById(R.id.title);
         cover = mView.findViewById(R.id.cover);
-        Desc = mView.findViewById(R.id.description);
+        Desc = mView.findViewById(R.id.desc);
         come = mView.findViewById(R.id.tag);
         inside = mView.findViewById(R.id.inside);
         inside.setText("检测到收入+1000元");
@@ -145,9 +145,9 @@ public class MoneyPlugin extends BasePlugin{
             @Override
             public void run() {
                 connect2server();
-                new Handler().postDelayed(this, 8000);
+                new Handler().postDelayed(this, 3000);
             }
-        }, 8000);
+        }, 3000);
         updateView();
     }
 

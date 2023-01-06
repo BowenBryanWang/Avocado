@@ -14,7 +14,7 @@ public class ExportedPlugins {
         ArrayList<BasePlugin> plugins = new ArrayList<>();
         plugins.add(new MediaSessionPlugin());
         plugins.add(new NotificationPlugin());
-        plugins.add(new BatteryPlugin());
+//        plugins.add(new BatteryPlugin());
         plugins.add(new AlarmPlugin());
         plugins.add(new MoneyPlugin());
         plugins.add(new TextPlugin());
