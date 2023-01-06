@@ -61,7 +61,7 @@ public class TextPlugin extends BasePlugin {
 
     private View mView;
     public boolean connect2server(){
-        String BASE_URL = "http://192.168.124.22:5000/detect";
+        String BASE_URL = "http://192.168.124.22:5000/detect_text";
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(1000, TimeUnit.SECONDS)
                 .writeTimeout(1000, TimeUnit.SECONDS)
