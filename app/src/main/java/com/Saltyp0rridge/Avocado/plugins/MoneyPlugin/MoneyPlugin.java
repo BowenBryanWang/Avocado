@@ -19,6 +19,7 @@ import com.Saltyp0rridge.Avocado.plugins.BasePlugin;
 import com.Saltyp0rridge.Avocado.utils.ResponseData;
 import com.Saltyp0rridge.Avocado.services.OverlayService;
 import com.Saltyp0rridge.Avocado.utils.SettingStruct;
+import com.Saltyp0rridge.Avocado.utils.BackendCommunicator;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.gson.Gson;
 
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 //倒入PendingIntent类
 import android.os.Handler;
+
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -68,7 +70,7 @@ public class MoneyPlugin extends BasePlugin{
         return mView;
     }
     public boolean connect2server(){
-        String BASE_URL = "http://192.168.124.22:5000/detect_money";
+        String BASE_URL = "http://"+BackendCommunicator.BACKEND_URL+":5000/detect_money";
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(1000, TimeUnit.SECONDS)
                 .writeTimeout(1000, TimeUnit.SECONDS)

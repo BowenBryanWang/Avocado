@@ -20,6 +20,7 @@ import com.Saltyp0rridge.Avocado.JWebSocketClient;
 import com.Saltyp0rridge.Avocado.R;
 import com.Saltyp0rridge.Avocado.plugins.BasePlugin;
 import com.Saltyp0rridge.Avocado.services.OverlayService;
+import com.Saltyp0rridge.Avocado.utils.BackendCommunicator;
 import com.Saltyp0rridge.Avocado.utils.SettingStruct;
 import com.google.android.material.imageview.ShapeableImageView;
 //import ResponseData
@@ -61,7 +62,7 @@ public class TextPlugin extends BasePlugin {
 
     private View mView;
     public boolean connect2server(){
-        String BASE_URL = "http://192.168.124.22:5000/detect_text";
+        String BASE_URL = "http://"+ BackendCommunicator.BACKEND_URL+":5000/detect_text";
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(1000, TimeUnit.SECONDS)
                 .writeTimeout(1000, TimeUnit.SECONDS)

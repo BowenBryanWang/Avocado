@@ -5,8 +5,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
 public class BackendCommunicator {
-    private static final String BACKEND_URL = "http://192.168.7.74:5000/";
+    public static final String BACKEND_URL = "192.168.124.22";
 
     public String sendRequest(String endpoint) {
         StringBuilder response = new StringBuilder();
@@ -27,4 +28,6 @@ public class BackendCommunicator {
 
         return response.toString();
     }
+
+
 }
